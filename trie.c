@@ -3,7 +3,7 @@
 struct trieNode* createNode (char data) {
 	struct trieNode* node = malloc(sizeof(struct trieNode));
 	
-	for (int i = 0; i < 40; i++)
+	for (int i = 0; i < NUM_CHARS; i++)
 		node -> children[i] = NULL;
 		
 	node -> end = false;
@@ -13,7 +13,7 @@ struct trieNode* createNode (char data) {
 }
 
 void freeNode (struct trieNode* node) {
-	for (int i = 0; i < 40; i++) {
+	for (int i = 0; i < NUM_CHARS; i++) {
 		if (node -> children[i] != NULL)
 			free(node -> children[i]);
 	}	
@@ -21,45 +21,49 @@ void freeNode (struct trieNode* node) {
 	free(node);
 }
 
+
+char idxToChar (int idx) {
+	if (idx == 0)
+		return '\0';
+	else if (idx == 1)
+		return "";
+	else if (idx >= 2 && idx <= 11) 
+		return (idx - 2) - '0';
+	else if  (idx >= 12 && idx <= 25)
+		return (idx - 12) + 'a';
+	else if (idx == 37)
+		return '?';
+}
+
+int charToIdx (char c) {
+	int idx = 0;
+	if (c == "") {
+		idx = 1;
+	} else if (c >= '0' && c <= '9') {
+		idx = c - '0' + 2;
+	} else if (c >= 'a' && c <= 'z') {
+		idx = c - 'a' + 12;
+	} else if (c == '?') {
+		idx = 37;
+	}
+}
+
+//ordem dos caracteres na trie: "\0", " ", "0", "1", "2", "3", "4", "5", "6", "7", "8","9","a", "b", "c", "d", 
+//"e", "f", "g", "h", "i","j","k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "?" 
 void insertWord (struct trieNode *root, char *word) {
-	//posições em children = 0-25(a-z); 26-35(0-9); 36(?);37(.);38(*);39(' ')
 	char *i = word;
 	struct trieNode *temp = root;
-	
-	while ((*i) != '\0' && (*i) != '\n') {
-		int idx = (*i) - 'a';
-		if ((*i) >= 'a' && (*i) <= 'z') {
-			if (temp -> children[idx] == NULL)
-				temp -> children[idx] = createNode((*i));
-		} else if (isdigit((*i))) {
-			idx = (*i) - '0' + 26;
-			if (temp -> children[idx] == NULL)
-				temp -> children[idx] = createNode((*i));
-		} else if ((*i) == '?') {
-			idx = 36;
-			if (temp -> children[36] == NULL)
-				temp -> children[36] = createNode('?');
-		} else if ((*i) == '.') {
-			idx = 37;
-			if (temp -> children[37] == NULL)
-				temp -> children[37] = createNode('.');
-		} else if ((*i) == '*') {
-			idx = 38;
-			if (temp -> children[38] == NULL)
-				temp -> children[38] = createNode('*');
-		} else if ((*i) == ' ') {
-		idx = 39;
-			if (temp -> children[39] == NULL)
-				temp -> children[39] = createNode(' ');	
-		}
+	int idx = 0;
 
+	while ((*i) != '\0' && (*i) != '\n') {
+		int idx = charToIdx(*i);
+		temp -> children[idx] = createNode((*i));
 		i++;
-		temp = temp -> children[idx];	
-	}
+		temp = temp -> children[idx];
+	}	
 	
 	//o último nó a ser inserido é folha. 
 	temp -> end = true;
-	
 }
 
 void printTrie(struct trieNode* root) {
@@ -67,59 +71,37 @@ void printTrie(struct trieNode* root) {
     if (!root)
         return;
     printf("%c", root->letter);
-    for (int i=0; i<40; i++) {
+    for (int i=0; i<NUM_CHARS; i++) {
         printTrie(root->children[i]);
     }
 }
 
-void printPrefix (struct trieNode *root, char *s) {
-	if (!root)
-		return;
-	
+void printToFile (struct trieNode *root, char *currMovie, int level){ //FILE *exit_file) {
 	if (root -> end) {
-		printf("\n%s", s);
+		currMovie[level] = '\0';
+		printf("%s\n", currMovie);
 	}
 
-	printf("%c", root -> letter);
-	for (int i=0; i<40; i++) {
-        printPrefix(root->children[i], s);
-    }
+	for (int i = 0; i < NUM_CHARS; i++) {
+		if (root -> children[i]) {
+			currMovie[level] = idxToChar(i);
+			printToFile(root, currMovie, level + 1);
+		}
+	}
 }
 
-void prefix (struct trieNode* root, char *s) {
+void prefix (struct trieNode* root, char *s, int level) {
 	char *i = s;
 
 	struct trieNode *temp = root;
 
 	while (*i != '\0' && *i != '\n') {
-		int idx = *i - 'a';
-		if (isdigit(*i)) {
-			idx = *i - '0' + 26;
-		} else if ((*i) == '?') {
-			idx = 36;
-		} else if ((*i) == '.') {
-			idx = 37;
-		} else if ((*i) == '*') {
-			idx = 38;
-		} else if ((*i) == ' ') {
-			idx = 39;
-		}
-
-		printf("%c", *i);
+		int idx = charToIdx((*i));
 		temp = temp -> children[idx];
 		i++;
 	}
 
-	/*
-	bool achouProx = false;
-	for (int i = 0; i < 40 && !achouProx; i++) {
-		if (temp -> children[i] != NULL) {
-			temp  = temp -> children[i];
-			achouProx = true;
-		}
-	}
-	*/
-
-	printPrefix(temp, s);
-
+	//buffer to store the current movie being processed.
+	char currMovie[1024];
+	printToFile(temp, currMovie, 0);
 }

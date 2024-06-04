@@ -6,8 +6,10 @@
 #include <stdbool.h>
 #include <ctype.h>
 
+#define NUM_CHARS 38
+
 struct trieNode {
-	struct trieNode *children[40];
+	struct trieNode *children[NUM_CHARS];
 	char letter;
 	//identifica se chegamos ao fim da string(nó folha).
 	bool end;
