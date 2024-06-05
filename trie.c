@@ -1,4 +1,5 @@
 #include "trie.h"
+#include <string.h>
 
 struct trieNode* createNode (char data) {
 	struct trieNode* node = malloc(sizeof(struct trieNode));
@@ -26,26 +27,28 @@ char idxToChar (int idx) {
 	if (idx == 0)
 		return '\0';
 	else if (idx == 1)
-		return "";
+		return ' ';
 	else if (idx >= 2 && idx <= 11) 
 		return (idx - 2) - '0';
-	else if  (idx >= 12 && idx <= 25)
+	else if  (idx >= 12 && idx <= 37)
 		return (idx - 12) + 'a';
-	else if (idx == 37)
+	else if (idx == 38)
 		return '?';
 }
 
 int charToIdx (char c) {
 	int idx = 0;
-	if (c == "") {
+	if (c == ' ') {
 		idx = 1;
 	} else if (c >= '0' && c <= '9') {
 		idx = c - '0' + 2;
 	} else if (c >= 'a' && c <= 'z') {
 		idx = c - 'a' + 12;
 	} else if (c == '?') {
-		idx = 37;
+		idx = 38;
 	}
+
+	return idx;
 }
 
 //ordem dos caracteres na trie: "\0", " ", "0", "1", "2", "3", "4", "5", "6", "7", "8","9","a", "b", "c", "d", 
@@ -57,9 +60,11 @@ void insertWord (struct trieNode *root, char *word) {
 
 	while ((*i) != '\0' && (*i) != '\n') {
 		int idx = charToIdx(*i);
-		temp -> children[idx] = createNode((*i));
-		i++;
+		if (!temp -> children[idx]) {
+			temp -> children[idx] = createNode((*i));
+		}
 		temp = temp -> children[idx];
+		i++;
 	}	
 	
 	//o último nó a ser inserido é folha. 
@@ -76,24 +81,25 @@ void printTrie(struct trieNode* root) {
     }
 }
 
-void printToFile (struct trieNode *root, char *currMovie, int level){ //FILE *exit_file) {
+void printToFile (struct trieNode *root, char *prefix, char *currMovie, int level){ //FILE *exit_file) {
 	if (root -> end) {
 		currMovie[level] = '\0';
-		printf("%s\n", currMovie);
+		printf("%s%s\n", prefix, currMovie);
 	}
 
 	for (int i = 0; i < NUM_CHARS; i++) {
 		if (root -> children[i]) {
 			currMovie[level] = idxToChar(i);
-			printToFile(root, currMovie, level + 1);
+			printToFile(root -> children[i], prefix, currMovie, level + 1);
 		}
 	}
 }
 
-void prefix (struct trieNode* root, char *s, int level) {
+void prefix (struct trieNode* root, char *s) {
 	char *i = s;
 
 	struct trieNode *temp = root;
+	char currMovie[1024];
 
 	while (*i != '\0' && *i != '\n') {
 		int idx = charToIdx((*i));
@@ -101,7 +107,5 @@ void prefix (struct trieNode* root, char *s, int level) {
 		i++;
 	}
 
-	//buffer to store the current movie being processed.
-	char currMovie[1024];
-	printToFile(temp, currMovie, 0);
+	printToFile(temp, s, currMovie, 0);
 }

@@ -69,10 +69,10 @@ int main(int argc, char *argv[])
     char *linha = NULL;
     char* result = NULL;
     int status;
-	unsigned long tamLinha;
+	  unsigned long tamLinha;
   
     //muda o locale para mostrar os simbolos "certos"
-	printf("locale original: %s\n", setlocale(LC_ALL, NULL));
+	  printf("locale original: %s\n", setlocale(LC_ALL, NULL));
     char* local = setlocale(LC_ALL, "pt_BR.UTF-8");
     if (local == NULL) return -1;
     printf("locale alterado para \"%s\"\n", local);
@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
       return 0;
     }
 
-	struct trieNode* root = createNode('\0');
+	  struct trieNode* root = createNode('\0');
 	
     while (status = getline(&linha, &tamLinha, arq) != -1) {
       result = padronizaString(linha); 
@@ -99,6 +99,6 @@ int main(int argc, char *argv[])
     char *s = malloc(6);
     strcpy(s, "rocky");
     prefix(root, s);
-    
+
     return 0;
 }

@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 
-#define NUM_CHARS 38
+#define NUM_CHARS 39
 
 struct trieNode {
 	struct trieNode *children[NUM_CHARS];
