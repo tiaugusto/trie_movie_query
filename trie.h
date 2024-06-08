@@ -23,6 +23,8 @@ void insertWord (struct trieNode *root, char *word);
 
 void printTrie(struct trieNode *root);
 
-void prefix(struct trieNode *root, char *s);
+void prefix(struct trieNode *root, char *s, FILE *exit_file);
+
+void longestPrefix (struct trieNode *root, char *currMovie);
 
 #endif

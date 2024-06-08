@@ -96,9 +96,9 @@ int main(int argc, char *argv[])
       insertWord(root, result);
     }
 
-    char *s = malloc(6);
-    strcpy(s, "rocky");
-    prefix(root, s);
+
+  //    FILE *exit_file = fopen("saida.txt", "w");
+
 
     return 0;
 }

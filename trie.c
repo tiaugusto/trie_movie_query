@@ -81,21 +81,23 @@ void printTrie(struct trieNode* root) {
     }
 }
 
-void printToFile (struct trieNode *root, char *prefix, char *currMovie, int level){ //FILE *exit_file) {
+ 
+
+void printToFile (struct trieNode *root, char *prefix, char *currMovie, int level, FILE *exit_file) {
 	if (root -> end) {
 		currMovie[level] = '\0';
-		printf("%s%s\n", prefix, currMovie);
+		fprintf(exit_file, "%s%s\n", prefix, currMovie);
 	}
 
 	for (int i = 0; i < NUM_CHARS; i++) {
 		if (root -> children[i]) {
 			currMovie[level] = idxToChar(i);
-			printToFile(root -> children[i], prefix, currMovie, level + 1);
+			printToFile(root -> children[i], prefix, currMovie, level + 1, exit_file);
 		}
 	}
 }
 
-void prefix (struct trieNode* root, char *s) {
+void prefix (struct trieNode* root, char *s, FILE *exit_file) {
 	char *i = s;
 
 	struct trieNode *temp = root;
@@ -107,5 +109,23 @@ void prefix (struct trieNode* root, char *s) {
 		i++;
 	}
 
-	printToFile(temp, s, currMovie, 0);
+	printToFile(temp, s, currMovie, 0, exit_file);
+}
+
+void longestPrefix (struct trieNode *root, char *currMovie) {
+	char longest[1024];
+
+	//root começa na primeira letra do filme a ser analisado.
+	struct trieNode *temp = root -> children[charToIdx(currMovie[0])];
+
+	int level = 0;
+	for (int i = 1; i < strlen(currMovie) + 1 && temp != NULL; i++) {
+		printf("oi %c\n", temp -> letter);
+		longest[level] = temp -> letter;
+		level++;
+		temp = temp -> children[charToIdx(currMovie[i])];
+	}
+
+	longest[level] = '\0';
+	printf("%s\n", longest);
 }
