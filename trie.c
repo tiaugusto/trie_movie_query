@@ -29,7 +29,7 @@ char idxToChar (int idx) {
 	else if (idx == 1)
 		return ' ';
 	else if (idx >= 2 && idx <= 11) 
-		return (idx - 2) - '0';
+		return (idx - 2) + '0';
 	else if  (idx >= 12 && idx <= 37)
 		return (idx - 12) + 'a';
 	else if (idx == 38)
@@ -120,7 +120,6 @@ void longestPrefix (struct trieNode *root, char *currMovie) {
 
 	int level = 0;
 	for (int i = 1; i < strlen(currMovie) + 1 && temp != NULL; i++) {
-		printf("oi %c\n", temp -> letter);
 		longest[level] = temp -> letter;
 		level++;
 		temp = temp -> children[charToIdx(currMovie[i])];
@@ -128,4 +127,39 @@ void longestPrefix (struct trieNode *root, char *currMovie) {
 
 	longest[level] = '\0';
 	printf("%s\n", longest);
+}
+
+
+
+void listPatterns (struct trieNode *root, char *pattern, char *currPattern, int level) {
+	if (!root)
+		return;
+	
+	if (*pattern == '\0') {
+		if (root -> end) {
+			currPattern[level] = '\0';
+			printf("%s\n", currPattern);
+		}
+	} else if (*pattern == '.') {
+		for (int i = 0; i < NUM_CHARS; i++) {
+			if (root -> children[i]) {
+				currPattern[level] = idxToChar(i);
+				listPatterns(root -> children[i], pattern + 1, currPattern, level + 1);
+			}
+		}
+	} else if (*pattern == '*') {
+		listPatterns(root, pattern + 1, currPattern, level);
+		for (int i = 0; i < NUM_CHARS; i++) {
+			if (root -> children[i]) {
+				currPattern[level] = idxToChar(i);	
+				listPatterns(root -> children[i], pattern, currPattern, level + 1);
+			}
+		}
+	} else {
+		int idx = charToIdx(*pattern);
+		if (root -> children[idx]) {
+			currPattern[level] = (*pattern);
+			listPatterns(root -> children[idx], pattern + 1, currPattern, level + 1);
+		}
+	}
 }

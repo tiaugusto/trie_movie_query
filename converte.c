@@ -96,7 +96,9 @@ int main(int argc, char *argv[])
       insertWord(root, result);
     }
 
-
+    char pat[15] = "1*";
+    char currPat[1000];
+    listPatterns(root, pat, currPat, 0);
   //    FILE *exit_file = fopen("saida.txt", "w");
 
 

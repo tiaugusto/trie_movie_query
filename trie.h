@@ -27,4 +27,6 @@ void prefix(struct trieNode *root, char *s, FILE *exit_file);
 
 void longestPrefix (struct trieNode *root, char *currMovie);
 
+void listPatterns (struct trieNode *root, char *pattern, char *currPattern, int level);
+
 #endif
