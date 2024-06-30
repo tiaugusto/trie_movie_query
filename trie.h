@@ -19,14 +19,16 @@ struct trieNode* createNode (char data);
 
 void freeNode (struct trieNode* node);
 
-void insertWord (struct trieNode *root, char *word);
+char idxToChar (int idx);
 
-void printTrie(struct trieNode *root);
+int charToIdx (char c);
+
+void insertWord (struct trieNode *root, char *word);
 
 void prefix(struct trieNode *root, char *s, FILE *exit_file);
 
-void longestPrefix (struct trieNode *root, char *currMovie);
+void longestPrefix (struct trieNode *root, char *currMovie, FILE *exit_file);
 
-void listPatterns (struct trieNode *root, char *pattern, char *currPattern, int level);
+void listPatterns (struct trieNode *root, char *pattern, char *currPattern, int level, FILE *exit_file);
 
 #endif

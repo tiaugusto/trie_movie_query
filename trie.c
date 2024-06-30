@@ -71,18 +71,6 @@ void insertWord (struct trieNode *root, char *word) {
 	temp -> end = true;
 }
 
-void printTrie(struct trieNode* root) {
-    // Prints the nodes of the trie
-    if (!root)
-        return;
-    printf("%c", root->letter);
-    for (int i=0; i<NUM_CHARS; i++) {
-        printTrie(root->children[i]);
-    }
-}
-
- 
-
 void printToFile (struct trieNode *root, char *prefix, char *currMovie, int level, FILE *exit_file) {
 	if (root -> end) {
 		currMovie[level] = '\0';
@@ -112,7 +100,7 @@ void prefix (struct trieNode* root, char *s, FILE *exit_file) {
 	printToFile(temp, s, currMovie, 0, exit_file);
 }
 
-void longestPrefix (struct trieNode *root, char *currMovie) {
+void longestPrefix (struct trieNode *root, char *currMovie, FILE *exit_file) {
 	char longest[1024];
 
 	//root começa na primeira letra do filme a ser analisado.
@@ -126,40 +114,38 @@ void longestPrefix (struct trieNode *root, char *currMovie) {
 	}
 
 	longest[level] = '\0';
-	printf("%s\n", longest);
+	fprintf(exit_file, "%s\n", longest);
 }
 
-
-
-void listPatterns (struct trieNode *root, char *pattern, char *currPattern, int level) {
+void listPatterns (struct trieNode *root, char *pattern, char *currPattern, int level, FILE *exit_file) {
 	if (!root)
 		return;
 	
 	if (*pattern == '\0') {
 		if (root -> end) {
 			currPattern[level] = '\0';
-			printf("%s\n", currPattern);
+			fprintf(exit_file, "%s\n", currPattern);
 		}
 	} else if (*pattern == '.') {
 		for (int i = 0; i < NUM_CHARS; i++) {
 			if (root -> children[i]) {
 				currPattern[level] = idxToChar(i);
-				listPatterns(root -> children[i], pattern + 1, currPattern, level + 1);
+				listPatterns(root -> children[i], pattern + 1, currPattern, level + 1, exit_file);
 			}
 		}
 	} else if (*pattern == '*') {
-		listPatterns(root, pattern + 1, currPattern, level);
+		listPatterns(root, pattern + 1, currPattern, level, exit_file);
 		for (int i = 0; i < NUM_CHARS; i++) {
 			if (root -> children[i]) {
 				currPattern[level] = idxToChar(i);	
-				listPatterns(root -> children[i], pattern, currPattern, level + 1);
+				listPatterns(root -> children[i], pattern, currPattern, level + 1, exit_file);
 			}
 		}
 	} else {
 		int idx = charToIdx(*pattern);
 		if (root -> children[idx]) {
 			currPattern[level] = (*pattern);
-			listPatterns(root -> children[idx], pattern + 1, currPattern, level + 1);
+			listPatterns(root -> children[idx], pattern + 1, currPattern, level + 1, exit_file);
 		}
 	}
 }

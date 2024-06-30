@@ -16,7 +16,7 @@ char* padronizaString(char* entrada)
     {
       0,   1,   2,   3,   4,   5,   6,   7,   8,  32,  10,  11,  12,  13,  14,  15,  // 000-015
      16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,  28,  29,  30,  31,  // 016-031
-     32,  63,  63,  63,  63,  63,  63,  63,  63,  63,  63,  63,  63,  63,  63,  63,  // 032-047
+     32,  63,  63,  63,  63,  63,  63,  63,  63,  63,  42,  63,  63,  63,  46,  63,  // 032-047
      48,  49,  50,  51,  52,  53,  54,  55,  56,  57,  63,  63,  63,  63,  63,  63,  // 048-063
      63,  97,  98,  99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111,  // 064-079
     112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122,  63,  63,  63,  63,  63,  // 080-095
@@ -71,11 +71,9 @@ int main(int argc, char *argv[])
     int status;
 	  unsigned long tamLinha;
   
-    //muda o locale para mostrar os simbolos "certos"
-	  printf("locale original: %s\n", setlocale(LC_ALL, NULL));
+    //muda o locale para mostrar os simbolos "certos.
     char* local = setlocale(LC_ALL, "pt_BR.UTF-8");
     if (local == NULL) return -1;
-    printf("locale alterado para \"%s\"\n", local);
     
     // abre arquivo de entrada
     if(argc != 2){
@@ -96,10 +94,32 @@ int main(int argc, char *argv[])
       insertWord(root, result);
     }
 
-    char pat[15] = "1*";
-    char currPat[1000];
-    listPatterns(root, pat, currPat, 0);
-  //    FILE *exit_file = fopen("saida.txt", "w");
+    //FILE *exit_file = fopen("saida.txt", "w");
+    char buffer[1024];
+
+
+    while (fgets(buffer, 1024, stdin)) {
+
+      buffer[strlen(buffer) - 1] = '\0';
+
+      char op = buffer[0];
+
+      char str[1024];
+      strcpy(str, buffer + 2);
+
+      strcpy(str, padronizaString(str));
+      printf("%s\n", buffer);
+
+      if (op == 'p') {
+        prefix(root, str, stdout);
+      } else if (op == 'l')
+        longestPrefix(root, str, stdout);
+      else if (op == 'c') {
+        char currPattern[1024];
+        listPatterns(root, str, currPattern, 0, stdout);
+      }
+
+    }
 
 
     return 0;
