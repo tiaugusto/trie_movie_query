@@ -56,7 +56,6 @@ int charToIdx (char c) {
 void insertWord (struct trieNode *root, char *word) {
 	char *i = word;
 	struct trieNode *temp = root;
-	int idx = 0;
 
 	while ((*i) != '\0' && (*i) != '\n') {
 		int idx = charToIdx(*i);

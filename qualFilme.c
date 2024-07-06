@@ -68,7 +68,6 @@ int main(int argc, char *argv[])
     FILE *arq;
     char *linha = NULL;
     char* result = NULL;
-    int status;
 	  unsigned long tamLinha;
   
     //muda o locale para mostrar os simbolos "certos.
@@ -89,7 +88,7 @@ int main(int argc, char *argv[])
 
 	  struct trieNode* root = createNode('\0');
 	
-    while (status = getline(&linha, &tamLinha, arq) != -1) {
+    while (getline(&linha, &tamLinha, arq) != -1) {
       result = padronizaString(linha); 
       insertWord(root, result);
     }
