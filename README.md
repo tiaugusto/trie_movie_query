@@ -2,4 +2,3 @@ Introdução: Este projeto implementa uma trie (árvore de prefixos) para armaze
 
 Detalhes de implementação: Para implementar essa consulta a partir de operações, foi usada uma trie em que cada nó representa um caractere do título de um filme. Além desse caracter, cara nó possui um array de ponteiros para 38 nós filhos, sendo cada nó correspondente a um caracter possível da trie('a-z', '0-9', ' ' e '?') e um booleano que indica se alguma palavra termina naquele nó, algo importante para o controle das chamadas recursivas das funções que manipulam a trie e que permite que uma palavra seja prefixo de outra.
 
-Dificuldades de implementação: implementação da lógica recursiva para o caracter coringa '*', já que eu não havia pensado no caso em que não houvesse um caracter dali pra frente.
