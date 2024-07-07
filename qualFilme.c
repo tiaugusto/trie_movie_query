@@ -104,8 +104,10 @@ int main(int argc, char *argv[])
       char op = buffer[0];
 
       char str[1024];
+      //copia a string em buffer que vem depois do caracter de operação.
       strcpy(str, buffer + 2);
 
+      //padroniza str.
       strcpy(str, padronizaString(str));
       printf("%s\n", buffer);
 
@@ -121,5 +123,6 @@ int main(int argc, char *argv[])
     }
 
 
+    freeTree(root);
     return 0;
 }

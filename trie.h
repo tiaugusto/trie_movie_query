@@ -17,7 +17,7 @@ struct trieNode {
 
 struct trieNode* createNode (char data);
 
-void freeNode (struct trieNode* node);
+void freeTree (struct trieNode *root);
 
 char idxToChar (int idx);
 
@@ -26,6 +26,8 @@ int charToIdx (char c);
 void insertWord (struct trieNode *root, char *word);
 
 void prefix(struct trieNode *root, char *s, FILE *exit_file);
+
+void printPrefixToFile (struct trieNode *root, char *prefix, char *currMovie, int level, FILE *exit_file);
 
 void longestPrefix (struct trieNode *root, char *currMovie, FILE *exit_file);
 
